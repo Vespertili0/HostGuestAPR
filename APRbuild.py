@@ -15,7 +15,6 @@ import parmed as pmd
 
 def APR_build(window_list, work_dir, guest_id, guest, solvate=False):
     base_name = "complex"
-    #work_dir = "APRtest_impl"
     complex_dir = "complex"
     for window in window_list:
         # Moving files in window's directory
@@ -31,11 +30,11 @@ def APR_build(window_list, work_dir, guest_id, guest, solvate=False):
                         os.path.join(work_dir, window, f"{base_name}.pdb"))
 
         elif window[0] == 'r':
-            shutil.copy(os.path.join(work_dir, 'p036', f"{base_name}.prmtop"),
+            shutil.copy(os.path.join(work_dir, 'p039', f"{base_name}.prmtop"),
                         os.path.join(work_dir, window, f"{base_name}.prmtop"))
-            shutil.copy(os.path.join(work_dir, 'p036', f"{base_name}.rst7"),
+            shutil.copy(os.path.join(work_dir, 'p039', f"{base_name}.rst7"),
                         os.path.join(work_dir, window, f"{base_name}.rst7"))
-            shutil.copy(os.path.join(work_dir, 'p036', f"{base_name}.pdb"),
+            shutil.copy(os.path.join(work_dir, 'p039', f"{base_name}.pdb"),
                         os.path.join(work_dir, window, f"{base_name}.pdb"))
             
         elif window[0] == "p":
@@ -61,9 +60,10 @@ def APR_build(window_list, work_dir, guest_id, guest, solvate=False):
             system = TLeap()
             system.output_prefix = base_name
             system.output_path = folder
-            system.target_waters = 2400
+            system.target_waters = 2210
             system.neutralize = True
             system.add_ions = ['Na+', 6, 'Cl-', 6]
+            system.pbc_type = 'rectangular'
             system.template_lines = ['source leaprc.GLYCAM_06j-1',
                                      'source leaprc.gaff2',
                                      #'source leaprc.protein.ff19SB',
