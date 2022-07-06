@@ -57,11 +57,11 @@ class SimulationMD:
             self.simulation.step(annealing_increments)
         self._write_state(name='MIN')
         
-    def runMD(self, eq_prod, ensemble, run_ns=2.5, write_traj=True, restart=False):
-        if self.step_size == 4:
-            snapshot = 1000
+      def runMD(self, eq_prod, ensemble, run_ns=1.5, write_traj=True, restart=False):
+        if self.step_size == 4:  ### write frames every 2ps ###
+            snapshot = 500
         if self.step_size == 2:
-            snapshot = 2000
+            snapshot = 1000
         run_steps = int(run_ns / self.step_size * 1e6)
         
         self._initialize_system()
@@ -74,31 +74,19 @@ class SimulationMD:
         file_name = f'{ensemble}_{eq_prod}'
         no_attempt = 0
         if restart is True:
-            no_attempt = 1
-            
-        while no_attempt <= 2:
             try:
-                if no_attempt == 1 or no_attempt > 2:
-                    no_attempt += 1
-                    self._prepare_MD(state=state, reportInterval=snapshot, name=file_name, restart=True,
-                                     write_traj=write_traj)
-                    self.simulation.loadCheckpoint(os.path.join(self.folder, 'checkpnt.chk'))
-                    steps_logged = open(os.path.join(self.folder, f'{file_name}.txt')).readlines()[-1]
-                    steps_logged = steps_logged.split(',')[0]
-                    run_steps -= int(float(steps_logged))
-                    print(f'chk loaded ... {run_steps} steps left')
-                    self.simulation.step(run_steps)
-                if no_attempt == 0 or no_attempt == 2:
-                    no_attempt += 1
-                    self._prepare_MD(state=state, reportInterval=snapshot, name=file_name,
-                                     write_traj=write_traj)
-                    self.simulation.step(run_steps)
-
-                self._write_state(name=file_name)
-                break
+                self._prepare_MD(state=state, reportInterval=snapshot, name=file_name,
+                                 restart=True, write_traj=write_traj)
+                self.simulation.loadCheckpoint(os.path.join(self.folder, 'checkpnt.chk'))
+                print(f'chk loaded ... continue')
+                self.simulation.step(run_steps)
             except OpenMMException:
-                print(f'...{self.window} in {no_attempt} failed')
-                continue
+                print(f'...{self.window} failed restart')
+        if restart is False:
+            self._prepare_MD(state=state, reportInterval=snapshot, name=file_name,
+                 write_traj=write_traj)
+            self.simulation.step(run_steps)
+        self._write_state(name=file_name)
 
 
 def MDrunAPR(SIM_LIST, work_dir):
