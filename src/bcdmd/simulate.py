@@ -5,6 +5,7 @@ from openmm import *
 from simtk.unit import *
 
 class SimulationMD:
+    """ Class to handle MD simulations for APR windows """
     def __init__(self, work_dir, window, step_size=2):
         self.WD = work_dir
         self.window = window
@@ -46,6 +47,7 @@ class SimulationMD:
         print('MD prepared')
     
     def minimize_anneal(self, target_T):
+        """ Minimize and anneal the system to target temperature """
         self._initialize_system()
         self._build_simulation(state=None)
         self.simulation.minimizeEnergy(tolerance=5.0*kilojoules_per_mole, maxIterations=20000)
@@ -58,6 +60,7 @@ class SimulationMD:
         self._write_state(name='MIN')
         
     def runMD(self, eq_prod, ensemble, run_ns=1.5, write_traj=True, restart=False):
+        """ Run MD simulation for equilibration or production """
         if self.step_size == 4:  ### write frames every 2ps ###
             snapshot = 500
         if self.step_size == 2:
@@ -90,6 +93,7 @@ class SimulationMD:
 
 
 def MDrunAPR(SIM_LIST, work_dir):
+    """ Run MD simulations for all APR windows """
     FAILED = list()
     for i, window in enumerate(SIM_LIST):
         try:
