@@ -7,16 +7,17 @@ The Attach-Pull-Release (APR) method is a molecular dynamics (MD) based free ene
 2. __Pull__: The guest is then pulled away from the host along a defined reaction coordinate, typically using umbrella sampling windows.
 3. __Release__: Finally, restraints are removed so the guest is free in bulk solvent. This step accounts for the entropic contribution of binding.
 
-![|800x445](notebooks/files/apr_graphic.png)
+![](notebooks/files/apr_graphic.png)
 
 Together, these steps yield the absolute binding free energy by integrating over the restraint work and the potential of mean force along the pulling coordinate.
+
+## Overview
 
 > ### :warning: Note
 > 
 > This repository was built in 2021 and is no longer actively maintained.
 >
 
-## Overview
 The code in `/src/bcdmd` is structured more like a collection of scripts than a roboust python package, wrapping functionalities of __paprika__, __ambertools__ and __openmm__ into a simple workflow for β-CD host-guest complexes. As their file names imply, four key tasks are addressed:
 
 | file | purpose|
@@ -27,18 +28,21 @@ The code in `/src/bcdmd` is structured more like a collection of scripts than a 
 | _analysis.py_ | executes the free-energy calculation for the guest binding in the host based on the collected MD trajectories |
 
 ### Usage
-Below is a typical workflow using the scripts in `src/bcdmd` for β-CD host–guest APR simulations using the General AMBER Force Field (GAFF). Alternatively, GLYCAM_06j-1 is also implemented by using _Glycam_ as keyword instead. In this case, the β-CD in the _complex.pdb_ has to be written in the glycam-specific format.
+Below is a typical workflow using the scripts in `src/bcdmd` for β-CD host–guest APR simulations.
+
 Each step can be run independently, allowing flexible and modular execution.
 
 #### 1. Build the Host–Guest System
+Here, the General AMBER Force Field (GAFF) is used. Alternatively, GLYCAM_06j-1 is also implemented by using _Glycam_ as keyword instead. In this case, the β-CD in the _complex.pdb_ has to be written in the glycam-specific format.
+First, the force-field parameters are applied, then the complex is aligned in z-direction of the periodic cell and the dummy-atoms are added to anchor the complex. Hydrogen Mass Repartitioning (HMR) is applied to enable larger time steps (4 fs) during MD simulations.
 
 ```python
 from bcdmd.build import HostGuestComplexSetup
 
 apr_dir = "/path/to/APR_sims/"
-pdb_id = "ANA" #ligand used in pdb-file
+guest_id = "ANA" #ligand id used in complex.pdb file
 complex_pdb = "complex.pdb"
-hgcs = HostGuestComplexSetup(apr_dir, complex_pdb, pdb_id, "GAFF2")
+hgcs = HostGuestComplexSetup(apr_dir, complex_pdb, guest_id, "GAFF2")
 
 hgcs.parameterise_structure()
 hgcs.positioning_complex(":ANA@C9", ":ANA@C3")
@@ -46,6 +50,7 @@ hgcs.provide_dummies()
 ```
 
 #### 2. Prepare Simulation Windows
+The simulation windows are build, gradually pulling the guest molecule along the z-axis (here C9 -> C3) out of the guest molecule. Each window is written to a separate directory with its corresponding structure and force-field files for execution with openmm. The existing windows are solvated during a second build-process.
 
 ```python
 from bcdmd.simbuilder import HostGuestComplexSimulationBuilder
@@ -59,6 +64,7 @@ hgcsb.APR_build(guest_id=pdb_id, guest=pdb_id, solvate=True)
 ```
 
 #### 3. Run Simulations
+Simulations are executed via openmm, applying pre-set conditions of 300K with a Langevin-Middle integrator. Initial runs execute a minimisation and NPT sequence automatically. 
 
 ```python
 from bcdmd.simulate import MDrunAPR
@@ -75,6 +81,7 @@ while FRAME_list and loop < 5:
 ```
 
 #### 4. Analyze Results
+Wraps the analysis steps as implemented in [_paprika_](https://paprika.readthedocs.io/en/latest/workflow.html#analysis).
 
 ```python
 from bcdmd.analysis import APRanalysis
@@ -88,4 +95,3 @@ fe.plot_SEMatrix("pull")
 
 > See [`notebooks/APR_system_GAFF.ipynb`](notebooks/APR_system_GAFF.ipynb) for a full workflow example.
 
-### References
