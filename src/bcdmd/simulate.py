@@ -1,7 +1,7 @@
 import os, datetime, time, logging
 import xml.etree.ElementTree as ET
-from simtk.openmm.app import *
-from simtk.openmm import *
+from openmm.app import *
+from openmm import *
 from simtk.unit import *
 
 class SimulationMD:
@@ -57,7 +57,7 @@ class SimulationMD:
             self.simulation.step(annealing_increments)
         self._write_state(name='MIN')
         
-      def runMD(self, eq_prod, ensemble, run_ns=1.5, write_traj=True, restart=False):
+    def runMD(self, eq_prod, ensemble, run_ns=1.5, write_traj=True, restart=False):
         if self.step_size == 4:  ### write frames every 2ps ###
             snapshot = 500
         if self.step_size == 2:
