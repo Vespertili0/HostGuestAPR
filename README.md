@@ -1,4 +1,4 @@
-# Attach-Pull-Release (APR) Simulations of β-Cyclodextrin
+# Simple APR Simulation Scripts for β-Cyclodextrin Host–Guest Binding
 
 ## Background
 The Attach-Pull-Release (APR) method is a molecular dynamics (MD) based free energy calculation technique used to estimate binding affinities in host–guest systems. It works by restraining, pulling, and releasing the guest molecule from the host, allowing accurate computation of binding thermodynamics:
@@ -17,7 +17,7 @@ Together, these steps yield the absolute binding free energy by integrating over
 >
 
 ## Overview
-The code in `/src/bcdmd` is structured more like a collection of scripts than a roboust python package, wrapping functionalities of paprika, ambertools and openmm into a simple workflow for β-CD host-guest complexes. As their file names imply, four key tasks are addressed:
+The code in `/src/bcdmd` is structured more like a collection of scripts than a roboust python package, wrapping functionalities of __paprika__, __ambertools__ and __openmm__ into a simple workflow for β-CD host-guest complexes. As their file names imply, four key tasks are addressed:
 
 | file | purpose|
 |------|--------|
@@ -27,7 +27,7 @@ The code in `/src/bcdmd` is structured more like a collection of scripts than a 
 | _analysis.py_ | executes the free-energy calculation for the guest binding in the host based on the collected MD trajectories |
 
 ### Usage
-Below is a typical workflow using the scripts in `src/bcdmd` for β-CD host–guest APR simulations.  
+Below is a typical workflow using the scripts in `src/bcdmd` for β-CD host–guest APR simulations using the General AMBER Force Field (GAFF). Alternatively, GLYCAM_06j-1 is also implemented by using _Glycam_ as keyword instead. In this case, the β-CD in the _complex.pdb_ has to be written in the glycam-specific format.
 Each step can be run independently, allowing flexible and modular execution.
 
 #### 1. Build the Host–Guest System
@@ -35,10 +35,10 @@ Each step can be run independently, allowing flexible and modular execution.
 ```python
 from bcdmd.build import HostGuestComplexSetup
 
-apr_dir = "/path/to/APR_sims/ANA_A"
-pdb_id = "ANA"
-system_name = "ANA_A"
-hgcs = HostGuestComplexSetup(apr_dir, f"bCD+{system_name}", pdb_id, "GAFF2")
+apr_dir = "/path/to/APR_sims/"
+pdb_id = "ANA" #ligand used in pdb-file
+complex_pdb = "complex.pdb"
+hgcs = HostGuestComplexSetup(apr_dir, complex_pdb, pdb_id, "GAFF2")
 
 hgcs.parameterise_structure()
 hgcs.positioning_complex(":ANA@C9", ":ANA@C3")
