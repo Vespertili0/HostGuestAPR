@@ -18,7 +18,7 @@ Together, these steps yield the absolute binding free energy by integrating over
 > This repository was built in 2021 and is no longer actively maintained.
 >
 
-The code in `/src/bcdmd` is structured more like a collection of scripts than a roboust python package, wrapping functionalities of __paprika__, __ambertools__ and __openmm__ into a simple workflow for β-CD host-guest complexes. As their file names imply, four key tasks are addressed:
+The code in `/src/bcdmd` is structured more like a collection of scripts than a roboust python package, wrapping functionalities of [paprika](https://github.com/GilsonLabUCSD/pAPRika), [ambertools](https://ambermd.org/AmberTools.php) and [openmm](https://github.com/openmm/openmm) into a simple workflow for β-CD host-guest complexes. As their file names imply, four key tasks are addressed:
 
 | file | purpose|
 |------|--------|
