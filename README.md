@@ -25,6 +25,7 @@ Together, these steps yield the absolute binding free energy by integrating over
 > The complexity of repeatedly integrating multiple software tools in APR simulations hinders accessibility and increases the risk of error.
 
 ## Overview
+This repository provides a Python workflow that simplifies APR simulations for β‑cyclodextrin host–guest complexes, reducing complexity and improving reproducibility.
 ![](notebooks/files/apr_graphic.png)
 The code in `/src/bcdmd` is structured more like a collection of scripts than a roboust python package, wrapping functionalities of [paprika](https://github.com/GilsonLabUCSD/pAPRika), [ambertools](https://ambermd.org/AmberTools.php) and [openmm](https://github.com/openmm/openmm) into a simple workflow for β-CD host-guest complexes. As their file names imply, four key tasks are addressed:
 
