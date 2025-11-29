@@ -1,7 +1,7 @@
 import os, shutil, subprocess
 import simtk.unit as unit
-import simtk.openmm.app as app
-import simtk.openmm as openmm
+import openmm.app as app
+import openmm
 
 from paprika.restraints.utils import parse_window
 from paprika.restraints.openmm import apply_positional_restraints, apply_dat_restraint
@@ -116,8 +116,8 @@ class HostGuestComplexSimulationBuilder:
         return conf_Mask    
     
     def _convert_Glyc2Gaff(self):
-        mol_glyc = mda.Universe(f'../mol2-files/bCD_glyc06_centered.pdb')
-        mol_gaff = mda.Universe(f'../mol2-files/bCD_gaff.pdb')
+        mol_glyc = mda.Universe(f'../../mol2-files/bCD_glyc06_centered.pdb')
+        mol_gaff = mda.Universe(f'../../mol2-files/bCD_gaff.pdb')
         glyc_atom_names = list()
         gaff_atom_names = list()
         for a_chain, a_name in zip(list(mol_glyc.atoms.resids), list(mol_glyc.atoms.names)):

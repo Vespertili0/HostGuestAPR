@@ -1,7 +1,7 @@
 import os, shutil, subprocess
 import simtk.unit as unit
-import simtk.openmm.app as app
-import simtk.openmm as openmm
+import openmm.app as app
+import openmm
 
 from paprika.restraints.utils import parse_window
 from paprika.restraints.openmm import apply_positional_restraints, apply_dat_restraint
