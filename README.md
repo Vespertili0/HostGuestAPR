@@ -1,31 +1,40 @@
 # Simple APR Simulation Scripts for β-Cyclodextrin Host–Guest Binding
 
-## Background
-The Attach-Pull-Release (APR) method is a molecular dynamics (MD) based free energy calculation technique used to estimate binding affinities in host–guest systems. It works by restraining, pulling, and releasing the guest molecule from the host, allowing accurate computation of binding thermodynamics:
-
-1. __Attach__: The guest molecule is gradually restrained to the host binding site using harmonic restraints. This ensures the system is well-defined and avoids sampling issues.
-2. __Pull__: The guest is then pulled away from the host along a defined reaction coordinate, typically using umbrella sampling windows.
-3. __Release__: Finally, restraints are removed so the guest is free in bulk solvent. This step accounts for the entropic contribution of binding.
-
-![](notebooks/files/apr_graphic.png)
-
-Together, these steps yield the absolute binding free energy by integrating over the restraint work and the potential of mean force along the pulling coordinate.
-
-## Overview
-
 > ### :warning: Note
 > 
 > This repository was built in 2021 and is no longer actively maintained.
+> Dependencies: paprika(v1.1.0), openmm(v7.6.0), ambertools(v23.3)
 >
 
+## Background
+Host-guest complexes are molecular systems where a larger "host" molecule encapsulates a smaller "guest" molecule. This interaction alters the physical properties of the guest without changing its chemical structure. This mechanism is highly relevant in three areas of application:
+1. **Consumer Goods**: Trapping malodors or stabilize fragrances in products like air fresheners (->Febreze).
+2. **Pharmaceuticals**: Delivering insoluble medication to the body by encapsulation.
+3. **Method Development**: Testing systems to improve modelling of host-guest binding to improve predictions on pharmaceutical drug-protein interactions and drug discovery.
+
+## Current Limitation
+Accuratly estimating the binding energy between host and guest is central to the application of host-guest complexes. The Attach-Pull-Release (APR) method is a molecular dynamics (MD) based free energy calculation technique to achieve this. It works by restraining, pulling, and releasing the guest molecule from the host, allowing accurate computation of binding thermodynamics:
+
+1. __Attach__: The guest molecule is gradually restrained to the host binding site using harmonic restraints. This keeps them in a specific orientation and limit their movement to create a stable starting point and allow the software to measure the energy required to hold them in place.
+2. __Pull__: The guest is slowly "pulled" away from the guest binding site into the bulk solvent (water) along a defined path. The simulation calculates the work (energy) required to separate the two molecules against their attractive forces, typically using several dozens of sampling windows.
+3. __Release__: Once the guest is far enough away that it no longer interacts with the host, the artificial restraints applied in Phase 1 are "released" (turned off). This returns the guest and host to their natural, unrestrained states in the solvent.
+
+Together, these steps yield the absolute binding free energy by integrating over the restraint work and the potential of mean force along the pulling coordinate.
+
+> ### 🚩Challenge
+> The complexity of repeatedly integrating multiple software tools in APR simulations hinders accessibility and increases the risk of error.
+>
+
+## Overview
+![](notebooks/files/apr_graphic.png)
 The code in `/src/bcdmd` is structured more like a collection of scripts than a roboust python package, wrapping functionalities of [paprika](https://github.com/GilsonLabUCSD/pAPRika), [ambertools](https://ambermd.org/AmberTools.php) and [openmm](https://github.com/openmm/openmm) into a simple workflow for β-CD host-guest complexes. As their file names imply, four key tasks are addressed:
 
 | file | purpose|
 |------|--------|
-| _build.py_ | executes tleap to generate the force-field parameters for the host-guest complex while positioning dummy-atoms needed for the APR setup |
-| _simbuilder.py_ | builds the simulations in openmm format for the guest molecules gradually pulled out of the host's binding pocket, while adding explicit solvent molecules and ions |
-| _simulate.py_ | executes the openmm simulations of each window, initialising or appending to existing simulation data |
-| _analysis.py_ | executes the free-energy calculation for the guest binding in the host based on the collected MD trajectories |
+| _build.py_ | executes _ambertools/tleap_ to generate the force-field parameters for the host-guest complex while positioning dummy-atoms needed for the APR setup |
+| _simbuilder.py_ | generates the APR pull-windows with _pAPRika_ and builds their simulation setup in _openmm_-format, while adding explicit solvent molecules and ions |
+| _simulate.py_ | executes the _openmm_ simulations of each window, initialising or appending to existing simulation data |
+| _analysis.py_ | executes the free-energy calculation in _pAPRika_ for the guest binding in the host based on the collected MD trajectories |
 
 ### Usage
 Below is a typical workflow using the scripts in `src/bcdmd` for β-CD host–guest APR simulations.
