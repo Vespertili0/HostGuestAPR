@@ -23,7 +23,6 @@ Together, these steps yield the absolute binding free energy by integrating over
 
 > ### 🚩Challenge
 > The complexity of repeatedly integrating multiple software tools in APR simulations hinders accessibility and increases the risk of error.
->
 
 ## Overview
 ![](notebooks/files/apr_graphic.png)
@@ -37,9 +36,7 @@ The code in `/src/bcdmd` is structured more like a collection of scripts than a 
 | _analysis.py_ | executes the free-energy calculation in _pAPRika_ for the guest binding in the host based on the collected MD trajectories |
 
 ### Usage
-Below is a typical workflow using the scripts in `src/bcdmd` for β-CD host–guest APR simulations.
-
-Each step can be run independently, allowing flexible and modular execution.
+Below is a typical workflow using the scripts in `src/bcdmd` for β-CD host–guest APR simulations. Each step can be run independently, allowing flexible and modular execution.
 
 #### 1. Build the Host–Guest System
 Here, the General AMBER Force Field (GAFF) is used. Alternatively, GLYCAM_06j-1 is also implemented by using _Glycam_ as keyword instead. In this case, the β-CD in the _complex.pdb_ has to be written in the glycam-specific format.
