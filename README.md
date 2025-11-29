@@ -3,7 +3,7 @@
 > ### :warning: Note
 > 
 > This repository was built in 2021 and is no longer actively maintained.
-> Dependencies: paprika(v1.1.0), openmm(v7.6.0), ambertools(v23.3)
+> (latest dependency update: paprika(v1.1.0), openmm(v7.6.0), ambertools(v23.3))
 >
 
 ## Background
